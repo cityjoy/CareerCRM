@@ -35,13 +35,13 @@ namespace CareerCRM.App
             .OrderBy(u => u.CascadeId).ToList();
 
             //更新操作
-            UnitWork.Update(org);
+            Repository.Update(org, false);
 
             //更新子部门的CascadeId
             foreach (var a in orgs)
             {
                 ChangeModuleCascade(a);
-                UnitWork.Update(a);
+                Repository.Update(a, false);
             }
 
             UnitWork.Save();

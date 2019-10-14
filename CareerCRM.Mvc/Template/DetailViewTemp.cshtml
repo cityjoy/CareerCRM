@@ -1,0 +1,24 @@
+﻿@*详情页面模板*@
+
+@using  CareerCRM.Mvc.Models.ViewModel;
+@model TempViewModel
+@@using CareerCRM.Repository.Domain;
+@@model @Model.ModelName
+<div class="layui-form">
+    <table class="layui-table">
+        <tbody>
+            @foreach (var item in Model.DataList)
+            {
+                var datas = item.Split(',');
+                var fieldName = datas[0];
+                var descriptionName = datas[1];
+                var fieldType = datas[2];
+                <tr>
+                    <td>@Html.Raw(descriptionName)</td>
+                    <td>@@Html.Raw(@@Model.@fieldName)</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

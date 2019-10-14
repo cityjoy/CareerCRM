@@ -1,15 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : Infrastructure
-// Author           : yubaolee
-// Created          : 06-21-2016
-//
-// Last Modified By : yubaolee
-// Last Modified On : 06-22-2016
-// Contact : 
-// File: UriUtil.cs
-// ***********************************************************************
-
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.Web;
 using Microsoft.AspNetCore.Http;

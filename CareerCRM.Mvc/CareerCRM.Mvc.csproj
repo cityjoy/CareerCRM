@@ -5,6 +5,96 @@
     <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="GeneratorFiles\**" />
+    <Content Remove="GeneratorFiles\**" />
+    <EmbeddedResource Remove="GeneratorFiles\**" />
+    <None Remove="GeneratorFiles\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\ueditor\dialogs\attachment\attachment.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\background\background.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\charts\chart.config.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\charts\charts.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\emotion\emotion.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\help\help.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\image\image.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\internal.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\music\music.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\scrawl\scrawl.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\searchreplace\searchreplace.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\spechars\spechars.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\table\edittable.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\template\config.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\template\template.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\video\video.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\wordimage\fClipboard_ueditor.swf" />
+    <None Include="wwwroot\js\ueditor\dialogs\wordimage\imageUploader.swf" />
+    <None Include="wwwroot\js\ueditor\dialogs\wordimage\tangram.js" />
+    <None Include="wwwroot\js\ueditor\dialogs\wordimage\wordimage.js" />
+    <None Include="wwwroot\js\ueditor\lang\en\en.js" />
+    <None Include="wwwroot\js\ueditor\lang\zh-cn\zh-cn.js" />
+    <None Include="wwwroot\js\ueditor\third-party\codemirror\codemirror.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\adapters\mootools-adapter.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\adapters\mootools-adapter.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\adapters\prototype-adapter.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\adapters\prototype-adapter.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\adapters\standalone-framework.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\adapters\standalone-framework.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\highcharts-more.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\highcharts-more.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\highcharts.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\highcharts.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\annotations.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\annotations.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\canvas-tools.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\canvas-tools.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\data.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\data.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\drilldown.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\drilldown.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\exporting.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\exporting.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\funnel.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\funnel.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\heatmap.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\heatmap.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\map.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\map.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\no-data-to-display.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\modules\no-data-to-display.src.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\themes\dark-blue.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\themes\dark-green.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\themes\gray.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\themes\grid.js" />
+    <None Include="wwwroot\js\ueditor\third-party\highcharts\themes\skies.js" />
+    <None Include="wwwroot\js\ueditor\third-party\jquery-1.10.2.js" />
+    <None Include="wwwroot\js\ueditor\third-party\jquery-1.10.2.min.js" />
+    <None Include="wwwroot\js\ueditor\third-party\jquery-1.10.2.min.map" />
+    <None Include="wwwroot\js\ueditor\third-party\snapscreen\UEditorSnapscreen.exe" />
+    <None Include="wwwroot\js\ueditor\third-party\SyntaxHighlighter\shCore.js" />
+    <None Include="wwwroot\js\ueditor\third-party\video-js\font\vjs.svg" />
+    <None Include="wwwroot\js\ueditor\third-party\video-js\video-js.swf" />
+    <None Include="wwwroot\js\ueditor\third-party\video-js\video.dev.js" />
+    <None Include="wwwroot\js\ueditor\third-party\video-js\video.js" />
+    <None Include="wwwroot\js\ueditor\third-party\webuploader\Uploader.swf" />
+    <None Include="wwwroot\js\ueditor\third-party\webuploader\webuploader.custom.js" />
+    <None Include="wwwroot\js\ueditor\third-party\webuploader\webuploader.custom.min.js" />
+    <None Include="wwwroot\js\ueditor\third-party\webuploader\webuploader.flashonly.js" />
+    <None Include="wwwroot\js\ueditor\third-party\webuploader\webuploader.flashonly.min.js" />
+    <None Include="wwwroot\js\ueditor\third-party\webuploader\webuploader.html5only.js" />
+    <None Include="wwwroot\js\ueditor\third-party\webuploader\webuploader.html5only.min.js" />
+    <None Include="wwwroot\js\ueditor\third-party\webuploader\webuploader.js" />
+    <None Include="wwwroot\js\ueditor\third-party\webuploader\webuploader.min.js" />
+    <None Include="wwwroot\js\ueditor\third-party\webuploader\webuploader.withoutimage.js" />
+    <None Include="wwwroot\js\ueditor\third-party\webuploader\webuploader.withoutimage.min.js" />
+    <None Include="wwwroot\js\ueditor\third-party\xss.min.js" />
+    <None Include="wwwroot\js\ueditor\third-party\zeroclipboard\ZeroClipboard.js" />
+    <None Include="wwwroot\js\ueditor\third-party\zeroclipboard\ZeroClipboard.min.js" />
+    <None Include="wwwroot\js\ueditor\third-party\zeroclipboard\ZeroClipboard.swf" />
+  </ItemGroup>
+
   <!--<ItemGroup>
     <Compile Remove="Views\Base\**" />
     <Content Remove="Views\Base\**" />
@@ -14,6 +104,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
   </ItemGroup>

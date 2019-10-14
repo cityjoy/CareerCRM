@@ -90,7 +90,7 @@ namespace CareerCRM.App
                 throw new Exception("请为角色分配机构");
             Role role = obj;
 
-            UnitWork.Update<Role>(u => u.Id == obj.Id, u => new Role
+            Repository.Update(u => u.Id == obj.Id, u => new Role
             {
                 Name = role.Name,
                 Status = role.Status

@@ -16,7 +16,7 @@ namespace CareerCRM.App
 
         public void Update(FlowScheme flowScheme)
         {
-            UnitWork.Update<FlowScheme>(u => u.Id == flowScheme.Id, u => new FlowScheme
+            Repository.Update(u => u.Id == flowScheme.Id, u => new FlowScheme
             {
                 SchemeContent = flowScheme.SchemeContent,
                 SchemeName = flowScheme.SchemeName,

@@ -1,16 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : OpenAuth.Mvc
-// Author           : yubaolee
-// Created          : 10-26-2015
-//
-// Last Modified By : yubaolee
-// Last Modified On : 10-26-2015
-// ***********************************************************************
-// <copyright file="AutofacExt.cs" company="www.cnblogs.com/yubaolee">
-//     Copyright (c) www.cnblogs.com/yubaolee. All rights reserved.
-// </copyright>
-// <summary>IOC扩展</summary>
-// ***********************************************************************
+﻿ 
 
 using System.Linq;
 using System.Reflection;

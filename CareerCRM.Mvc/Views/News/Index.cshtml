@@ -1,0 +1,213 @@
+﻿
+@section header
+    {
+    <link rel="stylesheet" href="/css/treetable.css" />
+}
+<div class="layui-elem-quote layui-form" style="padding-top:20px;background-color: #f2f2f2;">
+    <div class="layui-inline">
+        <div class="layui-inline">
+            <label class="layui-form-label">名称</label>
+            <div class="layui-input-inline">
+                <input type="text" Id="Name" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">时间</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" Id="Start_CreateTime" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid">-</div>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" Id="End_CreateTime" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">是否发布</label>
+            <div class="layui-input-inline" style="width:100px">
+                <select Id="IsPublish" lay-verify="required" lay-search="" style="width:50px">
+                    <option value="">选择</option>
+                    <option value="true">是</option>
+                    <option value="false">否</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-inline toolList">
+        <div class="layui-input-inline">
+            <button data-type="search" class="layui-btn layui-btn-small layui-btn"><i class="layui-icon layui-icon-search"></i>搜索</button>
+            <button data-type="btnRefresh" class="layui-btn layui-btn-small layui-btn"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+        </div>
+    </div>
+</div>
+<!--功能按钮菜单-->
+<blockquote class="layui-elem-quote news_search toolList" id="menus"></blockquote>
+
+<div class="layui-row">
+    <table class="layui-table"
+           lay-data="{ page:true, id:'mainList'}"
+           lay-filter="list" lay-size="sm">
+        <thead>
+            <tr>
+                <th lay-data="{checkbox:true, fixed: true}"></th>
+                <th lay-data="{ field: 'Name', sort: true}">名称</th>
+                <th lay-data="{ field: 'CreateTime', sort: true}">时间</th>
+                <th lay-data="{toolbar: '#barList'}"></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<!--列表右边的按钮-->
+<script type="text/html" id="barList">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+</script>
+
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: "/js/"
+    }).use(['form', 'vue', 'ztree', 'layer', 'laydate', 'jquery', 'table', 'droptree', 'openauth', 'utils'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.jquery;
+        var laydate = layui.laydate;
+        var table = layui.table;
+        var openauth = layui.openauth;
+
+        $("#menus").loadMenus("News");//加载列表上方的功能按钮（在模块管理中设置）
+
+        //主列表加载，可反复调用进行刷新
+        var config = {};  //table的参数，如搜索key，点击tree的id
+        var mainList = function () {
+            table.reload('mainList', {
+                url: '/News/Load',
+                where: config,
+                done: function (res, curr, count) {
+                    this.where = {};
+                },
+                response: {
+                    statusCode: 200 //规定成功的状态码，默认：0
+                }
+            });
+        }
+
+        mainList();
+
+        //添加编辑对话框
+        var editDlg = function () {
+            //var vm = new Vue({
+            //    el: "#formEdit"
+            //});
+            var update = false;  //是否为更新
+            var showForm = function (data) {
+                var title = update ? "编辑信息" : "添加";
+                layer.open({
+                    title: title,
+                    area: ["750px", "500px"],
+                    type: 2,//使用iframe模式
+                    maxmin: true,//开启最大化最小化
+                    content: '/News/Edit?id=' + data.Id,
+                    success: function () {
+                        // vm.$set('$data', data);
+
+                        //$(":radio[name='Sex'][value='" + data.Sex + "']").prop("checked", "checked");
+                        //$("input:checkbox[name='Status']").prop("checked", data.Status == 1);
+                        //$("input:checkbox[name='IsMaster']").prop("checked", data.IsMaster == 1);
+                        //下面这种方式适合单独开页面，不然上次选中的结果会对本次有影响
+                        // $('input:checkbox[name="Status"][value="' + data.Status + '"]').prop('checked', true);
+                        form.render();
+                    },
+                    end: mainList
+                });
+            }
+            var showDetail = function (data) {
+                var title = "查看";
+                layer.open({
+                    title: title,
+                    area: ["750px", "400px"],
+                    type: 2,
+                    content: '/News/Detail?id=' + data.Id,
+                    success: function () {
+                        form.render();
+                    },
+                    end: mainList
+                });
+            }
+            return {
+                add: function () { //弹出添加
+                    update = false;
+                    showForm({
+                        Id: ''
+                    });
+                },
+                update: function (data) { //弹出编辑框
+                    update = true;
+                    showForm(data);
+                },
+                lookOver: function (data) { //弹出编辑框
+                    update = false;
+                    showDetail(data);
+                }
+            };
+        }();
+
+        //监听表格内部按钮
+        table.on('tool(list)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {      //查看
+                editDlg.lookOver(data);
+            }
+        });
+
+        //监听页面主按钮操作
+        var active = {
+            btnDel: function () {      //批量删除
+                var checkStatus = table.checkStatus('mainList')
+                    , data = checkStatus.data;
+                openauth.del("/News/Delete",
+                    data.map(function (e) { return e.Id; }),
+                    mainList);
+            }
+            , btnAdd: function () {  //添加
+                editDlg.add();
+            }
+            , btnEdit: function () {  //编辑
+                var checkStatus = table.checkStatus('mainList')
+                    , data = checkStatus.data;
+                if (data.length != 1) {
+                    layer.msg("请选择编辑的行，且同时只能编辑一行");
+                    return;
+                }
+                editDlg.update(data[0]);
+            }
+
+            , search: function () {   //搜索
+                config = { limit: 10, page: 1, Name: $('#Name').val(), StartCreateTime: $('#Start_CreateTime').val(), EndCreateTime: $('#End_CreateTime').val(), IsPublish: $('#IsPublish').val() };
+                mainList();
+            }
+            , btnRefresh: function () {
+                window.location.reload();
+
+                 
+            }
+
+        };
+
+        $('.toolList .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //监听页面主按钮操作 end
+
+        //初始化日期控件，常规用法
+        laydate.render({
+            elem: '#Start_CreateTime'
+        });
+
+        //初始化日期控件，常规用法
+        laydate.render({
+            elem: '#End_CreateTime'
+        });
+    })
+</script>

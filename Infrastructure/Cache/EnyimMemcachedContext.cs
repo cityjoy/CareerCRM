@@ -1,15 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : Infrastructure
-// Author           : yubaolee
-// Created          : 06-21-2016
-//
-// Last Modified By : yubaolee
-// Last Modified On : 06-21-2016
-// Contact : Add services.AddEnyimMemcached(...)
-//                  and app.UseEnyimMemcached() in Startup. 
-// File: EnyimMemcachedContext.cs
-// ***********************************************************************
-
+﻿ 
 
 
 using System;

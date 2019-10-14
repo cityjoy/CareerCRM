@@ -34,10 +34,10 @@ namespace CareerCRM.App
 
         public void Add(Form obj)
         {
-            UnitWork.Add(obj);
+            Repository.Add(obj);
             if (!string.IsNullOrEmpty(obj.DbName))
             {
-                UnitWork.ExecuteSql(FormUtil.GetSql(obj));
+                Repository.ExecuteSql(FormUtil.GetSql(obj));
             }
             UnitWork.Save();
         }
@@ -59,7 +59,7 @@ namespace CareerCRM.App
 
             if (!string.IsNullOrEmpty(obj.DbName))
             {
-                UnitWork.ExecuteSql(FormUtil.GetSql(obj));
+                Repository.ExecuteSql(FormUtil.GetSql(obj));
             }
         }
 

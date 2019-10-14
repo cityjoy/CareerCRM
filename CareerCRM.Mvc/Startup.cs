@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using CareerCRM.App;
 using CareerCRM.Repository;
+using AutoMapper;
 
 namespace CareerCRM.Mvc
 {
@@ -41,7 +42,8 @@ namespace CareerCRM.Mvc
             services.AddOptions();
 
             services.AddRouting(options => options.LowercaseUrls = false);
-
+            //添加对AutoMapper的支持,参考https://www.cnblogs.com/skyfreedom/p/11073114.html
+            services.AddAutoMapper(typeof(AutoMapperProfile));
             //映射配置文件
             services.Configure<AppSetting>(Configuration.GetSection("AppSetting"));
             services.AddDbContext<OpenAuthDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OpenAuthDBContext"), b => b.UseRowNumberForPaging()));

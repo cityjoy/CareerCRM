@@ -1,16 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : OpenAuth.App
-// Author           : yubaolee
-// Created          : 11-29-2015
-//
-// Last Modified By : yubaolee
-// Last Modified On : 11-29-2015
-// ***********************************************************************
-// <copyright file="RoleVM.cs" company="www.cnblogs.com/yubaolee">
-//     Copyright (c) www.cnblogs.com/yubaolee. All rights reserved.
-// </copyright>
-// <summary>角色模型视图</summary>
-// ***********************************************************************
+﻿
 
 using Infrastructure;
 using CareerCRM.Repository.Domain;

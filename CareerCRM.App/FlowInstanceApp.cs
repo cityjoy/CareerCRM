@@ -19,9 +19,19 @@ namespace CareerCRM.App
     public class FlowInstanceApp : BaseApp<FlowInstance>
     {
         private RevelanceManagerApp _revelanceApp;
-
+        IRepository<FlowInstanceOperationHistory> _flowInstanceOperationHistoryRepository;
+        IRepository<FlowInstanceTransitionHistory> _flowInstanceTransitionHistoryRepository;
+        
         private IAuth _auth;
-
+        public FlowInstanceApp(IUnitWork unitWork, IRepository<FlowInstanceOperationHistory> flowInstanceOperationHistoryRepository,
+             IRepository<FlowInstanceTransitionHistory> flowInstanceTransitionHistoryRepository, IRepository<FlowInstance> repository
+     , IAuth auth, RevelanceManagerApp app) : base(unitWork, repository)
+        {
+            _auth = auth;
+            _revelanceApp = app;
+            _flowInstanceOperationHistoryRepository = flowInstanceOperationHistoryRepository;
+            _flowInstanceTransitionHistoryRepository = flowInstanceTransitionHistoryRepository;
+        }
         #region 流程处理API
 
         /// <summary>
@@ -54,8 +64,7 @@ namespace CareerCRM.App
             flowInstance.CreateUserName = user.User.Account;
             flowInstance.MakerList = (wfruntime.GetNextNodeType() != 4 ? GetNextMakers(wfruntime) : "");
             flowInstance.IsFinish = (wfruntime.GetNextNodeType() == 4 ? 1 : 0);
-
-            UnitWork.Add(flowInstance);
+            Repository.Add(flowInstance,false);
             wfruntime.flowInstanceId = flowInstance.Id;
 
             #endregion 根据运行实例改变当前节点状态
@@ -74,7 +83,7 @@ namespace CareerCRM.App
                           + flowInstance.Code + "/"
                           + flowInstance.CustomName + "】"
             };
-            UnitWork.Add(processOperationHistoryEntity);
+            _flowInstanceOperationHistoryRepository.Add(processOperationHistoryEntity, false);
 
             #endregion 流程操作记录
 
@@ -180,8 +189,8 @@ namespace CareerCRM.App
 
             flowInstance.SchemeContent = JsonHelper.Instance.Serialize(wfruntime.ToSchemeObj());
 
-            UnitWork.Update(flowInstance);
-            UnitWork.Add(flowInstanceOperationHistory);
+            Repository.Update(flowInstance,false);
+            _flowInstanceOperationHistoryRepository.Add(flowInstanceOperationHistory, false);
             UnitWork.Save();
             return true;
         }
@@ -222,9 +231,9 @@ namespace CareerCRM.App
                 AddTransHistory(wfruntime);
             }
 
-            UnitWork.Update(flowInstance);
+            Repository.Update(flowInstance, false);
 
-            UnitWork.Add(new FlowInstanceOperationHistory
+           _flowInstanceOperationHistoryRepository.Add(new FlowInstanceOperationHistory
             {
                 InstanceId = reqest.FlowInstanceId
                 ,
@@ -238,7 +247,7 @@ namespace CareerCRM.App
                           + wfruntime.currentNode.name
                           + "】【" + DateTime.Now.ToString("yyyy-MM-dd HH:mm") + "】驳回,备注："
                           + reqest.VerificationOpinion
-            });
+            },false);
 
             UnitWork.Save();
 
@@ -359,7 +368,7 @@ namespace CareerCRM.App
             {
                 result.count = UnitWork.Find<FlowInstance>(u => u.MakerList == "1" || u.MakerList.Contains(user.User.Id)).Count();
 
-                result.data = UnitWork.Find<FlowInstance>(request.page, request.limit, "CreateDate descending",
+                result.data = Repository.Find(request.page, request.limit, "CreateDate descending",
                     u => u.MakerList == "1" || u.MakerList.Contains(user.User.Id)).ToList();
             }
             else if (request.type == "disposed")  //已办事项（即我参与过的流程）
@@ -377,8 +386,8 @@ namespace CareerCRM.App
             }
             else  //我的流程
             {
-                result.count = UnitWork.Find<FlowInstance>(u => u.CreateUserId == user.User.Id).Count();
-                result.data = UnitWork.Find<FlowInstance>(request.page, request.limit,
+                result.count = Repository.Find(u => u.CreateUserId == user.User.Id).Count();
+                result.data = Repository.Find(request.page, request.limit,
                     "CreateDate descending", u => u.CreateUserId == user.User.Id).ToList();
             }
 
@@ -391,7 +400,7 @@ namespace CareerCRM.App
         private void AddTransHistory(FlowRuntime wfruntime)
         {
             var tag = _auth.GetCurrentUser().User;
-            UnitWork.Add(new FlowInstanceTransitionHistory
+            _flowInstanceTransitionHistoryRepository.Add(new FlowInstanceTransitionHistory
             {
                 InstanceId = wfruntime.flowInstanceId,
                 CreateUserId = tag.Id,
@@ -407,11 +416,6 @@ namespace CareerCRM.App
             });
         }
 
-        public FlowInstanceApp(IUnitWork unitWork, IRepository<FlowInstance> repository
-        , IAuth auth, RevelanceManagerApp app) : base(unitWork, repository)
-        {
-            _auth = auth;
-            _revelanceApp = app;
-        }
+     
     }
 }

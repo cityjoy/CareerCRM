@@ -1,0 +1,50 @@
+﻿@*控制器模板*@
+@using  CareerCRM.Mvc.Models.ViewModel;
+@model TempViewModel
+<p>
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations.Schema;
+    namespace @(Model.ProjectName).App.Request
+    {
+    public class @(Model.ModelName)ListReq: PageReq
+    {
+
+    @foreach (var item in Model.DataList)
+    {
+        var datas = item.Split(',');
+        var fieldName = datas[0];
+        var descriptionName = datas[1];
+        var fieldType = datas[2];
+        if (fieldType == "DateTime")
+        {
+             <text>
+            /// <summary>
+            ///起始 @Html.Raw(descriptionName)
+            ///</summary>
+            [Description("起始@Html.Raw(descriptionName)")]
+            public @(fieldType) Start@(fieldName) { get; set; }
+             </text>
+             <text>
+            /// <summary>
+            ///结束 @Html.Raw(descriptionName)
+            ///</summary>
+            [Description("结束@Html.Raw(descriptionName)")]
+            public @(fieldType) End@(fieldName) { get; set; }
+        </text>
+        }
+        <text>
+            /// <summary>
+            /// @Html.Raw(descriptionName)
+            ///</summary>
+            [Description("@Html.Raw(descriptionName)")]
+            public @(fieldType) @(fieldName) { get; set; }
+        </text>
+
+    }
+
+    }
+    }
+    </p>
+

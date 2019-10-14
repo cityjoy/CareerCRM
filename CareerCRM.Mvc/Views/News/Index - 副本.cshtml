@@ -1,0 +1,216 @@
+﻿@section header
+    {
+    <link rel="stylesheet" href="/css/treetable.css" />
+}
+<blockquote class="layui-elem-quote news_search toolList" id="menus"></blockquote>
+<div class="layui-row">
+    <table class="layui-table" lay-data="{ page:true, id:'mainList'}" lay-filter="list" lay-size="sm">
+        <thead>
+            <tr>
+                <th lay-data="{checkbox:true, fixed: true}"></th>
+                <th lay-data="{ field: 'Name', sort: true}">名称</th>
+                <th lay-data="{ field: 'CreateTime', sort: true}">时间</th>
+
+                <th lay-data="{toolbar: '#barList'}"></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<!--添加/编辑窗口-->
+<div id="divEdit" style="display: none">
+    <form class="layui-form layui-form-pane" action="" id="formEdit">
+        <input type="hidden" name="Id" v-model="Id" />
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="Name" v-model="Name" required lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">内容</label>
+            <div class="layui-input-block">
+                @*<input type="text" name="Content" v-model="Content" required lay-verify="required" placeholder="请输入内容" autocomplete="off" class="layui-input">*@
+                @*<input type="hidden" id="contentTxt" name="Content" v-model="Content"/>*@
+                <script id="myFormDesign" type="text/plain" style="width: 100%;">
+                </script>
+            </div>
+           
+        </div>
+
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formSubmit">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" charset="utf-8" src="~/js/ueditor/ueditor.config.js?2026"></script>
+<script type="text/javascript" charset="utf-8" src="~/js/ueditor/ueditor.all.js?2023"></script>
+<script type="text/javascript" charset="utf-8" src="~/js/ueditor/lang/zh-cn/zh-cn.js?2023"></script>
+<script type="text/javascript" charset="utf-8" src="~/js/ueditor/formdesign/leipi.formdesign.v4.js?2023"></script>
+
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: "/js/"
+    }).use(['form', 'vue', 'ztree', 'layer', 'jquery', 'table', 'droptree', 'openauth', 'utils'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.jquery;
+
+        var table = layui.table;
+        var openauth = layui.openauth;
+
+        $("#menus").loadMenus("News");//加载列表上方的功能按钮（在模块管理中设置）
+
+        //主列表加载，可反复调用进行刷新
+        var config = {};  //table的参数，如搜索key，点击tree的id
+        var mainList = function () {
+
+            table.reload('mainList', {
+                url: '/News/Load',
+                where: config
+                , response: {
+                    statusCode: 200 //规定成功的状态码，默认：0
+                }
+            });
+        }
+
+        mainList();
+        //添加编辑对话框
+        var editDlg = function () {
+            var vm = new Vue({
+                el: "#formEdit"
+            });
+            
+            var update = false;  //是否为更新
+            var show = function (data) {
+                var title = update ? "编辑信息" : "添加";
+                layer.open({
+                    title: title,
+                    area: ["750px", "500px"],
+                    type: 1,
+                    content: $('#divEdit'),
+                    success: function () {
+                        vm.$set('$data', data);
+                        //console.log(JSON.stringify(data.Content));
+                        //玄学：加个延迟ueditor才能正常,初步猜测是bootstrap-modalmanager.js（让Bootstrap支持多模态框）的处理方式比较特殊，导致模态框与富文本输入框共存时出现问题。
+                        setTimeout(function () {
+                            UE.getEditor('myFormDesign').setContent(data.Content);
+                        }, 500);
+                        //$(":radio[name='Sex'][value='" + data.Sex + "']").prop("checked", "checked");
+                        //$("input:checkbox[name='Status']").prop("checked", data.Status == 1);
+                        //$("input:checkbox[name='IsMaster']").prop("checked", data.IsMaster == 1);
+                        //下面这种方式适合单独开页面，不然上次选中的结果会对本次有影响
+                        // $('input:checkbox[name="Status"][value="' + data.Status + '"]').prop('checked', true);
+                        form.render();
+                      
+                    },
+                    end: mainList
+                });
+                var url = "/News/Add";
+                if (update) {
+                    url = "/News/Update";
+                }
+                
+                //提交数据
+                form.on('submit(formSubmit)',
+                    function (data) {
+                        //var txt = UE.getEditor('myFormDesign').getPlainTxt();
+                        //data.field.Content = txt;
+                        alert(JSON.stringify(data.field));
+
+                        $.post(url,
+                            data.field,
+                            function (data) {
+                                layer.msg(data.Message);
+                            },
+                            "json");
+                        return false;
+                    });
+            }
+            return {
+                add: function () { //弹出添加
+                    update = false;
+                    show({
+                        Id: ''
+                    });
+                },
+                update: function (data) { //弹出编辑框
+                    update = true;
+                    show(data);
+                }
+            };
+        }();
+
+        //监听页面主按钮操作
+        var active = {
+            btnDel: function () {      //批量删除
+                var checkStatus = table.checkStatus('mainList')
+                    , data = checkStatus.data;
+                openauth.del("/News/Delete",
+                    data.map(function (e) { return e.Id; }),
+                    mainList);
+            }
+            , btnAdd: function () {  //添加
+                editDlg.add();
+            }
+            , btnEdit: function () {  //编辑
+                var checkStatus = table.checkStatus('mainList')
+                    , data = checkStatus.data;
+                if (data.length != 1) {
+                    layer.msg("请选择编辑的行，且同时只能编辑一行");
+                    return;
+                }
+                editDlg.update(data[0]);
+            }
+
+            , search: function () {   //搜索
+                mainList({ key: $('#key').val() });
+            }
+            , btnRefresh: function () {
+                mainList();
+            }
+        };
+
+        $('.toolList .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //监听页面主按钮操作 end
+
+        //表单设计器
+        var ue = UE.getEditor('myFormDesign', {
+            //allowDivTransToP: false,//阻止转换div 为p
+            toolleipi: true,//是否显示，设计器的 toolbars
+            textarea: 'Content',
+            //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个
+            //toolbars: [[
+            //    'fullscreen', 'source'
+            //    , '|', 'undo', 'redo'
+            //    , '|', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'removeformat'
+            //    , '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist'
+            //    , '|', 'fontfamily', 'fontsize'
+            //    , '|', 'indent'
+            //    , '|', 'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify'
+            //    , '|', 'link', 'unlink'
+            //    , '|', 'horizontal', 'spechars', 'wordimage'
+            //    , '|', 'inserttable', 'deletetable', 'mergecells', 'splittocells']],
+            //关闭字数统计
+            wordCount: false,
+            //关闭elementPath
+            elementPathEnabled: false,
+            autoHeightEnabled: true
+            //默认的编辑区域高度
+            , initialFrameHeight: 200
+            , initialFrameWidth: 600
+            //,initialContent: '欢迎使用ueditor!' 
+            , iframeCssUrl: "/js/ueditor/formdesign/bootstrap/css/bootstrap.min.css" //引入自身 css使编辑器兼容你网站css
+            //更多其他参数，请参考ueditor.config.js中的配置项
+        });
+    })
+</script>

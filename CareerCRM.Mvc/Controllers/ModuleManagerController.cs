@@ -1,13 +1,12 @@
-﻿using Infrastructure;
-using CareerCRM.App;
-using CareerCRM.App.SSO;
-using CareerCRM.Mvc.Models;
-using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using CareerCRM.App;
 using CareerCRM.App.Interface;
 using CareerCRM.App.Response;
+using CareerCRM.Mvc.Models;
 using CareerCRM.Repository.Domain;
+using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 
 namespace CareerCRM.Mvc.Controllers
 {
@@ -39,7 +38,7 @@ namespace CareerCRM.Mvc.Controllers
         /// <returns>System.String.</returns>
         public string LoadForRole(string firstId)
         {
-            var modules = _app.LoadForRole(firstId);
+            System.Collections.Generic.IEnumerable<Module> modules = _app.LoadForRole(firstId);
             return JsonHelper.Instance.Serialize(modules);
         }
 
@@ -49,7 +48,7 @@ namespace CareerCRM.Mvc.Controllers
         /// <returns></returns>
         public string LoadMenusForRole(string moduleId, string firstId)
         {
-            var menus = _app.LoadMenusForRole(moduleId, firstId);
+            System.Collections.Generic.IEnumerable<ModuleElement> menus = _app.LoadMenusForRole(moduleId, firstId);
             return JsonHelper.Instance.Serialize(menus);
         }
 
@@ -59,8 +58,8 @@ namespace CareerCRM.Mvc.Controllers
         /// <returns>System.String.</returns>
         public string LoadAuthorizedMenus(string modulecode)
         {
-            var user = _authUtil.GetCurrentUser();
-            var module = user.Modules.FirstOrDefault(u =>u.Code == modulecode);
+            AuthStrategyContext user = _authUtil.GetCurrentUser();
+            ModuleView module = user.Modules.FirstOrDefault(u => u.Code == modulecode);
             if (module != null)
             {
                 return JsonHelper.Instance.Serialize(module.Elements);
@@ -74,7 +73,7 @@ namespace CareerCRM.Mvc.Controllers
 
         //添加模块
         [HttpPost]
-       
+
         public string Add(Module model)
         {
             try
@@ -84,14 +83,14 @@ namespace CareerCRM.Mvc.Controllers
             catch (Exception ex)
             {
                 Result.Code = 500;
-                Result.Message = ex.InnerException?.Message??ex.Message;
+                Result.Message = ex.InnerException?.Message ?? ex.Message;
             }
             return JsonHelper.Instance.Serialize(Result);
         }
 
         //修改模块
         [HttpPost]
-       
+
         public string Update(Module model)
         {
             try
@@ -135,21 +134,24 @@ namespace CareerCRM.Mvc.Controllers
         /// <returns>System.String.</returns>
         public string LoadMenus(string moduleId)
         {
-            var user = _authUtil.GetCurrentUser();
-
-            var module = user.Modules.Single(u => u.Id == moduleId);
-             
-            var data = new TableData
+            AuthStrategyContext user = _authUtil.GetCurrentUser();
+            ModuleView module = null;
+            if (!string.IsNullOrEmpty(moduleId))
             {
-                data = module.Elements,
-                count = module.Elements.Count(),
+                module = user.Modules.Single(u => u.Id == moduleId);
+            }
+
+            TableData data = new TableData
+            {
+                data = module?.Elements,
+                count = module == null ? 0 : module.Elements.Count(),
             };
             return JsonHelper.Instance.Serialize(data);
         }
 
         //添加功能按钮
         [HttpPost]
-       
+
         public string AddMenu(ModuleElement model)
         {
             try
@@ -166,7 +168,7 @@ namespace CareerCRM.Mvc.Controllers
 
         //添加功能按钮
         [HttpPost]
-       
+
         public string UpdateMenu(ModuleElement model)
         {
             try
@@ -201,6 +203,6 @@ namespace CareerCRM.Mvc.Controllers
             return JsonHelper.Instance.Serialize(Result);
         }
 
-        
+
     }
 }

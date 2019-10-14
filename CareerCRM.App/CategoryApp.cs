@@ -15,7 +15,12 @@ namespace CareerCRM.App
     {
         private RevelanceManagerApp _revelanceApp;
         private IAuth _auth;
-
+        public CategoryApp(IUnitWork unitWork, IRepository<Category> repository,
+                   RevelanceManagerApp app, IAuth auth) : base(unitWork, repository)
+        {
+            _revelanceApp = app;
+            _auth = auth;
+        }
         /// <summary>
         /// 加载列表
         /// </summary>
@@ -50,7 +55,7 @@ namespace CareerCRM.App
         
         public void Update(Category obj)
         {
-            UnitWork.Update<Category>(u => u.Id == obj.Id, u => new Category
+            Repository.Update(u => u.Id == obj.Id, u => new Category
             {
                //todo:要修改的字段赋值
             });
@@ -96,11 +101,6 @@ namespace CareerCRM.App
             return UnitWork.Find<CategoryType>(null).ToList();
         }
 
-        public CategoryApp(IUnitWork unitWork, IRepository<Category> repository,
-            RevelanceManagerApp app, IAuth auth) : base(unitWork, repository)
-        {
-            _revelanceApp = app;
-            _auth = auth;
-        }
+       
     }
 }

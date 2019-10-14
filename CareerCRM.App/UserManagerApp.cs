@@ -78,7 +78,7 @@ namespace CareerCRM.App
             User user = view;
             if (string.IsNullOrEmpty(view.Id))
             {
-                if (UnitWork.IsExist<User>(u => u.Account == view.Account))
+                if (Repository.IsExist(u => u.Account == view.Account))
                 {
                     throw new Exception("用户账号已存在");
                 }
@@ -89,14 +89,14 @@ namespace CareerCRM.App
                 }
                 user.Password = StringExtensions.ToMd5(user.Password); //加密密码
                 user.CreateTime = DateTime.Now;
-                UnitWork.Add(user);
+                Repository.Add(user);
                 view.Id = user.Id;   //要把保存后的ID存入view
             }
             else
             {
                 if (string.IsNullOrWhiteSpace(user.Password))
                 {
-                    UnitWork.Update<User>(u => u.Id == view.Id, u => new User
+                    Repository.Update(u => u.Id == view.Id, u => new User
                     {
                         BizCode = user.BizCode,
                         Name = user.Name,
@@ -114,7 +114,7 @@ namespace CareerCRM.App
                         throw new Exception("密码长度要大于6");
 
                     }
-                    UnitWork.Update<User>(u => u.Id == view.Id, u => new User
+                    Repository.Update(u => u.Id == view.Id, u => new User
                     {
                         BizCode = user.BizCode,
                         Password = StringExtensions.ToMd5(user.Password), //加密密码

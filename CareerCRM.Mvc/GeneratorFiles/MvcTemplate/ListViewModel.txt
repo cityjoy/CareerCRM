@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+namespace $projectName$.App.Response
+{
+    public class $modelname$ListVM
+    {
+	
+	   		 $fields$
+	
+    }
+}

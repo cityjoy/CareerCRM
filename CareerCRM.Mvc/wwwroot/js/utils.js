@@ -24,7 +24,7 @@ layui.define("jquery", function (exports) {
         return result;
     }
 
-    //加载菜单
+    //加载页面按钮菜单
     $.fn.extend({
         loadMenus: function (modulecode) {
             var dom = $(this);

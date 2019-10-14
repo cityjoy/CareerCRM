@@ -1,0 +1,107 @@
+@section header
+    {
+    <link href="~/js/ueditor/themes/default/css/ueditor.min.css" rel="stylesheet" />
+
+}
+<!--添加/编辑窗口-->
+<form class="layui-form layui-form-pane" action="" id="formEdit">
+    <input type="hidden" name="Id" v-model="Id" />
+
+    $formFields$
+
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formSubmit">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript" charset="utf-8" src="~/js/ueditor/ueditor.config.js?2026"></script>
+<script type="text/javascript" charset="utf-8" src="~/js/ueditor/ueditor.all.js?2023"></script>
+<script type="text/javascript" charset="utf-8" src="~/js/ueditor/lang/zh-cn/zh-cn.js?2023"></script>
+<script type="text/javascript" charset="utf-8" src="~/js/ueditor/formdesign/leipi.formdesign.v4.js?2023"></script>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script>
+    //初始化Ueditor
+    var ue = UE.getEditor('myFormDesign', {
+        //allowDivTransToP: false,//阻止转换div 为p
+        toolleipi: true,//是否显示，设计器的 toolbars
+        textarea: 'Content',
+        //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个
+        //toolbars: [[
+        //    'fullscreen', 'source'
+        //    , '|', 'undo', 'redo'
+        //    , '|', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'removeformat'
+        //    , '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist'
+        //    , '|', 'fontfamily', 'fontsize'
+        //    , '|', 'indent'
+        //    , '|', 'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify'
+        //    , '|', 'link', 'unlink'
+        //    , '|', 'horizontal', 'spechars', 'wordimage'
+        //    , '|', 'inserttable', 'deletetable', 'mergecells', 'splittocells']],
+        //关闭字数统计
+        wordCount: false,
+        //关闭elementPath
+        elementPathEnabled: false,
+        autoHeightEnabled: true
+        //默认的编辑区域高度
+        , initialFrameHeight: 200
+        , initialFrameWidth: 600
+        //,initialContent: '欢迎使用ueditor!'
+        , iframeCssUrl: "/js/ueditor/formdesign/bootstrap/css/bootstrap.min.css" //引入自身 css使编辑器兼容你网站css
+        //更多其他参数，请参考ueditor.config.js中的配置项
+    });
+    layui.config({
+        base: "/js/"
+    }).use(['form', 'vue', 'ztree', 'layer', 'jquery', 'table', 'droptree', 'openauth', 'utils'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.jquery;
+
+        var table = layui.table;
+        var openauth = layui.openauth;
+        var id = $.getUrlParam("id");   //获取传过来的ID
+        var update = (id != null && id != '');
+        var url = "/$modelname$/Add";
+        var vm = new Vue({
+            el: "#formEdit"
+        });
+        if (update) {
+
+            url = "/$modelname$/Update";
+
+            $.getJSON('/$modelname$/Get?id=' + id,
+                function (data) {
+                    var obj = data;
+                    vm.$set('$data', obj);
+
+                    //玄学：加个延迟ueditor才能正常,初步猜测是bootstrap-modalmanager.js（让Bootstrap支持多模态框）的处理方式比较特殊，导致模态框与富文本输入框共存时出现问题。
+                    setTimeout(function () {
+                        ue.setContent(obj.Content);
+                    }, 500);
+                });
+        } else {
+            vm.$set('$data',
+                {
+                    Id: '',
+                    SortCode: 1
+                });
+        }
+
+
+        //提交数据
+        form.on('submit(formSubmit)',
+            function (data) {
+                //var txt = UE.getEditor('id').getPlainTxt();
+                //data.field.Content = txt;
+                $.post(url,
+                    data.field,
+                    function (data) {
+                        layer.msg(data.Message);
+                    },
+                    "json");
+                return false;
+            });
+    })
+</script>

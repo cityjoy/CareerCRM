@@ -8,10 +8,16 @@ namespace CareerCRM.App
     public class ModuleManagerApp :BaseApp<Module>
     {
         private RevelanceManagerApp _revelanceApp;
-        public ModuleManagerApp(IUnitWork unitWork, IRepository<Module> repository
+        IRepository<ModuleElement> _moduleElementRepository;
+
+
+        public ModuleManagerApp(IUnitWork unitWork,
+        IRepository<ModuleElement> moduleElementRepository,
+        IRepository<Module> repository
 , RevelanceManagerApp app) : base(unitWork, repository)
         {
             _revelanceApp = app;
+            _moduleElementRepository = moduleElementRepository;
         }
         public void Add(Module model)
         {
@@ -67,20 +73,20 @@ namespace CareerCRM.App
         /// <param name="ids"></param>
         public void DelMenu(string[] ids)
         {
-            UnitWork.Delete<ModuleElement>(u => ids.Contains(u.Id));
+            _moduleElementRepository.Delete(u => ids.Contains(u.Id));
             UnitWork.Save();
         }
 
         public void AddMenu(ModuleElement model)
         {
-            UnitWork.Add(model);
+            _moduleElementRepository.Add(model);
             UnitWork.Save();
         }
         #endregion
 
         public void UpdateMenu(ModuleElement model)
         {
-            UnitWork.Update<ModuleElement>(model);
+            _moduleElementRepository.Update(model);
             UnitWork.Save();
         }
 
@@ -91,8 +97,8 @@ namespace CareerCRM.App
         /// <param name="ids"></param>
         public void DelModule(string[] ids)
         {
-            UnitWork.Update<Module>(u => ids.Contains(u.Id), u => new Module{ IsDeleted = true });//u =>u.Id==1,u =>new User{Name="ok"}
-            UnitWork.Save();
+            Repository.Update(u => ids.Contains(u.Id), u => new Module{ IsDeleted = true });//u =>u.Id==1,u =>new User{Name="ok"}
+            //UnitWork.Save();
         }
     }
 }

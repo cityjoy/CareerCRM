@@ -1,0 +1,11 @@
+﻿using System.ComponentModel;
+using $projectName$.Repository.Core;
+namespace $projectName$.App.Request
+{
+    public class $modelname$FormDTO: Entity
+    {
+	
+	   		 $fields$
+	
+    }
+}

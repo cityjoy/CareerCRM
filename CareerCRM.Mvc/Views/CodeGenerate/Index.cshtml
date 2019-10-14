@@ -1,0 +1,129 @@
+﻿@section header
+    {
+    <link rel="stylesheet" href="/css/treetable.css" />
+}
+
+<div class="layui-row">
+    <table class="layui-table"
+           lay-data="{ page:true, id:'mainList'}"
+           lay-filter="list" lay-size="sm">
+        <thead>
+            <tr>
+                <th lay-data="{field:'Name', width:400, sort: true, fixed: true}">表名称</th>
+                <th lay-data="{field:'Name', width:400, sort: true, fixed: true}">实体名称</th>
+                <th lay-data="{fixed: 'right', toolbar: '#barList', fixed: true}" ></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<!--列表右边的按钮-->
+<script type="text/html" id="barList">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">生成代码</a>
+</script>
+<div id="divEdit" style="display: none">
+    <form class="layui-form">
+        <div class="layui-row">
+            <table class="layui-table" lay-data="{ page:false, id:'entityColumnList'}"  lay-filter="list" lay-size="sm">
+                <thead>
+                    <tr>
+                        <th lay-data="{field:'Name', width:100, fixed: true}">字段名称</th>
+                        <th lay-data="{field:'desc', width:300, fixed: true}">字段描述</th>
+                        <th lay-data="{fixed:true,width:100, toolbar: '#searchbox'}">搜索条件</th>
+                        <th lay-data="{fixed:true, width:100,toolbar: '#fieldbox'}">列表展示</th>
+                        <th lay-data="{fixed:true, width:100,toolbar: '#formbox'}">表单展示</th>
+                    </tr>
+                </thead>
+            </table>
+            <div style="text-align:center;margin-top:10px">
+                <input id="entityName" type="hidden" name="entityName" />
+                <button type="button" class="layui-btn layui-btn-warm" lay-submit lay-filter="createCode">生成代码</button>
+            </div>
+        </div>
+        </form>
+</div>
+<script type="text/html" id="searchbox">
+    @*<input type="checkbox" name="like[write]" title="启用">*@
+    <input lay-skin="primary" type="checkbox" value="true"   name="search_{{d.Name}}">
+</script>
+<script type="text/html" id="fieldbox">
+    @*<input type="checkbox" name="like[write]" title="启用">*@
+    <input lay-skin="primary" type="checkbox" value="true" name="field_{{d.Name}} ">
+</script>
+<script type="text/html" id="formbox">
+    @*<input type="checkbox" name="like[write]" title="启用">*@
+    <input lay-skin="primary" type="checkbox" value="true"   name="form_{{d.Name}}">
+</script>
+<script type="text/javascript" src="/layui/layui.js"></script>
+
+<script>
+    layui.config({
+        base: "/js/"
+    }).use(['form', 'vue', 'ztree', 'layer', 'jquery', 'table', 'droptree', 'openauth', 'utils'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.jquery;
+
+        var table = layui.table;
+        var openauth = layui.openauth;
+
+
+
+        //主列表加载，可反复调用进行刷新
+        var config = {};  //table的参数，如搜索key，点击tree的id
+        var mainList = function () {
+
+            table.reload('mainList', {
+                url: '/CodeGenerate/Load',
+                where: config
+                , response: {
+                    statusCode: 200 //规定成功的状态码，默认：0
+                }
+            });
+        }
+        //生成代码功能对话框
+        var show = function (entityName) {
+
+            table.reload('entityColumnList', {
+                url: '/CodeGenerate/LoadColumnList?entityName=' + entityName,
+                where: config
+                , response: {
+                    statusCode: 200 //规定成功的状态码，默认：0
+                }
+            });
+            var title = "生成代码" + entityName;
+            $('#entityName').val(entityName);
+            layer.open({
+                title: title,
+                area: ["900px", "500px"],
+                type: 1,
+                content: $('#divEdit'),
+                
+            });
+        }
+
+        //监听模块表格内部按钮
+        table.on('tool(list)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {      //查看
+                //layer.msg('ID：' + data.name + ' 的查看操作');
+                show(data.Name);
+            }
+        });
+
+      
+
+        //提交数据
+        form.on('submit(createCode)',
+            function (data) {
+                $.post("/CodeGenerate/CreateCodes",
+                    data.field,
+                    function (data) {
+                        layer.msg(data.Message);
+                         
+                    },
+                    "json");
+                return false;
+            });
+        mainList();
+    })
+</script>

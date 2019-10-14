@@ -1,8 +1,4 @@
-﻿/**
- * Openauth通用工具库
- * yubaolee @ 2017
- * www.cnblogs.com/yubaolee
- */
+﻿ 
 layui.define(['jquery', 'layer'], function (exports) {
     var $ = layui.jquery;
     var layer = layui.layer;

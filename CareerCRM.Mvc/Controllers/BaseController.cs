@@ -1,15 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : OpenAuth.Mvc
-// Author           : yubaolee
-// Created          : 07-11-2016
-//
-// Last Modified By : yubaolee
-// Last Modified On : 07-19-2016
-// Contact : www.cnblogs.com/yubaolee
-// File: BaseController.cs
-// ***********************************************************************
-
-using Infrastructure;
+﻿using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Options;

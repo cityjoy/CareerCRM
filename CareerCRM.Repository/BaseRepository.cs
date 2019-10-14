@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using CareerCRM.Repository.Core;
 using CareerCRM.Repository.Interface;
 using Z.EntityFramework.Plus;
+using System.Collections.Generic;
 
 namespace CareerCRM.Repository
 {
@@ -55,7 +56,50 @@ namespace CareerCRM.Repository
 
             return Filter(exp).OrderBy(orderby).Skip(pagesize * (pageindex - 1)).Take(pagesize);
         }
+        /// <summary>  
+        /// 分页查询 + 条件查询 + 排序  
+        /// </summary>  
+        /// <typeparam name="Tkey">泛型</typeparam>  
+        /// <param name="pageSize">每页大小</param>  
+        /// <param name="pageIndex">当前页码</param>  
+        /// <param name="total">总数量</param>  
+        /// <param name="predicate">Lamda表达式（p=>p.Id==Id）查询条件</param>  
+        /// <param name="orderbyPredicate">Lamda表达式（p=>p.Id）排序条件</param>  
+        /// <param name="isAsc">是否升序</param>  
+        /// <returns>IQueryable 泛型集合</returns> 
 
+        public IQueryable<T> GetPageList<Tkey>(int pageSize, int pageIndex, out int total,
+            Expression<Func<T, bool>> predicate,
+            Expression<Func<T, Tkey>> orderbyPredicate, bool isAsc)
+        {
+            IQueryable<T> result = null;
+            //total = Entities.Where(predicate).Count();
+            if (isAsc)
+            {
+                var dbSet = _context.Set<T>().AsNoTracking().AsQueryable();
+                total = dbSet.Where(predicate).Count();
+                var temp = dbSet
+                        .Where(predicate)
+                        .OrderBy<T, Tkey>(orderbyPredicate)
+                        .Skip(pageSize * (pageIndex - 1))
+                        .Take(pageSize);
+                result = temp;
+                return result;
+            }
+            else
+            {
+                var dbSet = _context.Set<T>().AsNoTracking().AsQueryable();
+                total = dbSet.Where(predicate).Count();
+                var temp = dbSet
+                   .Where(predicate)
+                   .OrderByDescending<T, Tkey>(orderbyPredicate)
+                   .Skip(pageSize * (pageIndex - 1))
+                   .Take(pageSize);
+                result = temp;
+
+                return result;
+            }
+        }
         /// <summary>
         /// 根据过滤条件获取记录数
         /// </summary>
@@ -64,14 +108,17 @@ namespace CareerCRM.Repository
             return Filter(exp).Count();
         }
 
-        public void Add(T entity)
+        public void Add(T entity,bool isSaved = true)
         {
             if (string.IsNullOrEmpty(entity.Id))
             {
                 entity.Id = Guid.NewGuid().ToString();
             }
             _context.Set<T>().Add(entity);
-            Save();
+            if (isSaved)
+            {
+                _context.SaveChanges();
+            }
             _context.Entry(entity).State = EntityState.Detached;
         }
 
@@ -79,17 +126,21 @@ namespace CareerCRM.Repository
         /// 批量添加
         /// </summary>
         /// <param name="entities">The entities.</param>
-        public void BatchAdd(T[] entities)
+        public void BatchAdd(ICollection<T> entities, bool isSaved = true)
         {
             foreach (var entity in entities)
             {
                 entity.Id = Guid.NewGuid().ToString();
             }
             _context.Set<T>().AddRange(entities);
-            Save();
+            if (isSaved)
+            {
+                _context.SaveChanges();
+            }
+
         }
 
-        public void Update(T entity)
+        public void Update(T entity, bool isSaved = true)
         {
             var entry = this._context.Entry(entity);
             entry.State = EntityState.Modified;
@@ -100,13 +151,21 @@ namespace CareerCRM.Repository
                 return;
             }
 
-            Save();
+            if (isSaved)
+            {
+                _context.SaveChanges();
+            }
+
         }
 
-        public void Delete(T entity)
+        public void Delete(T entity, bool isSaved = true)
         {
             _context.Set<T>().Remove(entity);
-            Save();
+            if (isSaved)
+            {
+                _context.SaveChanges();
+            }
+
         }
 
 
@@ -116,26 +175,14 @@ namespace CareerCRM.Repository
         /// </summary>
         /// <param name="where">The where.</param>
         /// <param name="entity">The entity.</param>
-        public void Update(Expression<Func<T, bool>> where, Expression<Func<T, T>> entity)
+        public  bool Update(Expression<Func<T, bool>> where, Expression<Func<T, T>> entity)
         {
-           _context.Set<T>().Where(where).Update(entity);
+           return _context.Set<T>().Where(where).Update(entity)>0;
         }
 
-        public virtual void Delete(Expression<Func<T, bool>> exp)
+        public  bool Delete(Expression<Func<T, bool>> exp)
         {
-            _context.Set<T>().Where(exp).Delete();
-        }
-
-        public void Save()
-        {
-            //try
-            //{
-                _context.SaveChanges();
-            //}
-            //catch (DbEntityValidationException e)
-            //{
-            //    throw new Exception(e.EntityValidationErrors.First().ValidationErrors.First().ErrorMessage);
-            //}
+            return _context.Set<T>().Where(exp).Delete()>0;
         }
 
         private IQueryable<T> Filter(Expression<Func<T, bool>> exp)
@@ -150,5 +197,7 @@ namespace CareerCRM.Repository
        {
           return  _context.Database.ExecuteSqlCommand(sql);
        }
-   }
+
+       
+    }
 }

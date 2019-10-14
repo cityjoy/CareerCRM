@@ -1,0 +1,118 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using $projectName$.App.Interface;
+using $projectName$.App.Request;
+using $projectName$.App.Response;
+using $projectName$.Repository.Core;
+using $projectName$.App;
+using $projectName$.Mvc.Models;
+using $projectName$.Repository.Domain;
+
+namespace $projectName$.Mvc.Controllers
+{
+    [Authenticate]
+	public partial class $modelname$Controller : BaseController
+    {
+
+	    private readonly $modelname$App _app;
+        public $modelname$Controller(IAuth authUtil, $modelname$App  app) : base(authUtil)
+        {
+            _app = app;
+        }
+        #region 首页
+       
+        public ActionResult Index()
+        {
+              return View();
+        }
+        #endregion
+
+		#region 加载列表
+        public JsonResult Load([FromQuery]$modelname$ListReq request)
+        {
+            return Json(_app.Load(request));
+        }
+		#endregion
+
+        #region 新建
+        //public ActionResult Create()
+        //{
+        //      return View();
+        //}
+
+        [HttpPost]
+        public JsonResult Add($modelname$ model)
+        {
+            try
+            {
+                _app.Add(model);
+
+            }
+            catch (Exception ex)
+            {
+                Result.Code = 500;
+                Result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+            return Json(Result);
+        }
+        #endregion
+
+        #region 修改
+        public ActionResult Edit(string id)
+        {
+            var vm = _app.Get(id);
+           return  View(vm);
+        }
+
+        [HttpPost]
+        [ValidateFormItemOnly]
+        public JsonResult Update($modelname$FormDTO model)
+        {
+            try
+            {
+                _app.Update(model);
+
+            }
+            catch (Exception ex)
+            {
+                Result.Code = 500;
+                Result.Message = ex.InnerException?.Message ?? ex.Message;
+            }
+            return Json(Result);
+
+        }
+        #endregion
+
+        #region 删除
+
+        [HttpPost]
+        public JsonResult Delete(string[] ids)
+        {
+            try
+            {
+                _app.Delete(ids);
+            }
+            catch (Exception e)
+            {
+                Result.Code = 500;
+                Result.Message = e.InnerException?.Message ?? e.Message;
+            }
+
+            return Json(Result);
+        }
+
+        #endregion
+
+        #region 详细
+        public ActionResult Get(string id)
+        {
+            var vm = _app.Get(id);
+            return View(vm);
+        }
+        #endregion
+
+      
+
+    }
+}

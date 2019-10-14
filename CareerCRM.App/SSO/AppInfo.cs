@@ -1,13 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : SmartSSO
-// Author           : yubaolee
-// Created          : 06-08-2016
-//
-// Last Modified By : yubaolee
-// Last Modified On : 07-06-2016
-// Contact : 
-// File: AppInfo.cs
-// ***********************************************************************
+﻿ 
 
 using System;
 

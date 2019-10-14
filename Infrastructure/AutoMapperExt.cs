@@ -1,18 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : FairUtility
-// Author           : Yubao Li
-// Created          : 08-27-2015
-//
-// Last Modified By : Yubao Li
-// Last Modified On : 08-27-2015
-// ***********************************************************************
-// <copyright file="AutoMapperExt.cs" company="">
-//     Copyright (c) . All rights reserved.
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
-
-using System;
+﻿using System;
 using AutoMapper;
 using System.Collections;
 using System.Collections.Generic;

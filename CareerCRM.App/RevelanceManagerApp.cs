@@ -9,7 +9,9 @@ namespace CareerCRM.App
 {
     public class RevelanceManagerApp  :BaseApp<Relevance>
     {
-
+        public RevelanceManagerApp(IUnitWork unitWork, IRepository<Relevance> repository) : base(unitWork, repository)
+        {
+        }
         /// <summary>
         /// 添加关联，自动根据firstId删除以前的关联
         /// <para>比如给用户分配资源，那么firstId就是用户ID，secIds就是资源ID列表</para>
@@ -27,7 +29,7 @@ namespace CareerCRM.App
         /// <param name="idMaps"></param>
         public void Assign(string key, ILookup<string, string> idMaps)
         {
-            UnitWork.BatchAdd((from sameVals in idMaps
+            Repository.BatchAdd((from sameVals in idMaps
                 from value in sameVals
                 select new Relevance
                 {
@@ -113,9 +115,7 @@ namespace CareerCRM.App
                 .Select(u => u.ThirdId).ToList();
         }
 
-        public RevelanceManagerApp(IUnitWork unitWork, IRepository<Relevance> repository) : base(unitWork, repository)
-        {
-        }
+        
 
         /// <summary>
         /// 分配数据字段权限
@@ -135,7 +135,7 @@ namespace CareerCRM.App
                     OperateTime = DateTime.Now
                 });
             }
-            UnitWork.BatchAdd(relevances.ToArray());
+            Repository.BatchAdd(relevances.ToArray());
             UnitWork.Save();
         }
 

@@ -1,37 +1,35 @@
 ﻿@section header
-{
+    {
     <link rel="stylesheet" href="/css/treetable.css" />
 }
-<blockquote class="layui-elem-quote news_search toolList" id="menus">
-</blockquote>
+<blockquote class="layui-elem-quote news_search toolList" id="menus"></blockquote>
 
 <div class="layui-row">
     <div class="layui-col-xs2">
         <ul id="tree" class="ztree"
-            style="padding: 2px; border: 1px solid #ddd; overflow: auto;">
-        </ul>
+            style="padding: 2px; border: 1px solid #ddd; overflow: auto;"></ul>
     </div>
     <div class="layui-col-xs7">
         <table class="layui-table"
                lay-data="{height: 'full-80', id:'mainList'}"
                lay-filter="list" lay-size="sm">
             <thead>
-            <tr>
-                <th lay-data="{checkbox:true, fixed: true}"></th>
-                <th lay-data="{field:'Name', width:120, sort: true, fixed: true}">模块名称</th>
-                <th lay-data="{field:'CascadeId', width:80}">层级ID</th>
-                <th lay-data="{field:'Code', width:80}">模块标识</th>
-                <th lay-data="{field:'Url', width:200}">Url</th>
-                <th lay-data="{field:'IconName', width:60,templet: '#iconTpl'}">图标</th>
-                <th lay-data="{field:'ParentName', width:135}">父节点名称</th>
-                <th lay-data="{field:'SortNo', width:80}">排序号</th>
-                <th lay-data="{fixed: 'right', width:100, toolbar: '#barList'}"></th>
-            </tr>
+                <tr>
+                    <th lay-data="{checkbox:true, fixed: true}"></th>
+                    <th lay-data="{field:'Name', width:120, sort: true, fixed: true}">模块名称</th>
+                    <th lay-data="{field:'CascadeId', width:80}">层级ID</th>
+                    <th lay-data="{field:'Code', width:80}">模块标识</th>
+                    <th lay-data="{field:'Url', width:200}">Url</th>
+                    <th lay-data="{field:'IconName', width:60,templet: '#iconTpl'}">图标</th>
+                    <th lay-data="{field:'ParentName', width:135}">父节点名称</th>
+                    <th lay-data="{field:'SortNo', width:80}">排序号</th>
+                    <th lay-data="{fixed: 'right', width:100, toolbar: '#barList'}"></th>
+                </tr>
             </thead>
         </table>
         <!--列表右边的按钮-->
         <script type="text/html" id="barList">
-            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看功能按钮</a>
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" title="查看功能按钮">查看功能按钮</a>
         </script>
         <script type="text/html" id="iconTpl">
             {{#  if( d.IconName != null && d.IconName != ''){ }}
@@ -41,20 +39,20 @@
             {{#  } }}
         </script>
     </div>
-    
+
     <div class="layui-col-xs">
         <!--菜单列表-->
         <table class="layui-table"
                lay-data="{height: 'full-80', id:'menuList'}"
                lay-filter="menulist" lay-size="sm">
             <thead>
-            <tr>
-                <th lay-data="{checkbox:true, fixed: true}"></th>
-                <th lay-data="{field:'Icon', width:150,templet: '#menuTpl'}">已有功能按钮</th>
-            </tr>
+                <tr>
+                    <th lay-data="{checkbox:true, fixed: true}"></th>
+                    <th lay-data="{field:'Icon', width:150,templet: '#menuTpl'}">已有功能按钮</th>
+                </tr>
             </thead>
         </table>
-       
+
         <script type="text/html" id="menuTpl">
             <button class="layui-btn layui-btn-xs {{ d.Class }} layui-btn-fluid" alt="{{ d.DomId }}">{{ d.Name }}</button>
         </script>
@@ -78,7 +76,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">模块标识</label>
             <div class="layui-input-block">
-                <input type="text" name="Code" v-model="Code" 
+                <input type="text" name="Code" v-model="Code"
                        placeholder="比如：Module" autocomplete="off" class="layui-input">
             </div>
         </div>
@@ -95,7 +93,7 @@
                 <select name="IconName" v-model="IconName" required lay-verify="required">
                     <option value="" selected="selected"></option>
                     <option value="&#xe679;">盾牌</option>
-                    <option value="&#xe672;;">授权</option>
+                    <option value="&#xe672;">授权</option>
                     <option value="&#xe674;">高级</option>
                     <option value="&#xe665;">控制台</option>
                     <option value="&#xe679;">验证码</option>
@@ -130,7 +128,7 @@
             <label class="layui-form-label">所属模块</label>
             <div class="layui-input-block">
                 <input id="ParentName" name="ParentName" v-model="ParentName" class="layui-input" />
-                <input id="ParentId" name="ParentId" v-model="ParentId"  type="hidden" />
+                <input id="ParentId" name="ParentId" v-model="ParentId" type="hidden" />
                 <div id="menuContent" class="menuContent" style="display: none;">
                     <ul id="org" class="ztree"></ul>
                 </div>
@@ -151,7 +149,7 @@
     <form class="layui-form layui-form-pane" action="" id="mfromEdit">
 
         <input type="hidden" name="Id" v-model="Id" />
-        <input type="hidden" name="ModuleId" v-model="ModuleId" />  
+        <input type="hidden" name="ModuleId" v-model="ModuleId" />
 
         <div class="layui-form-item">
             <label class="layui-form-label">菜单名称</label>
@@ -165,15 +163,21 @@
             <label class="layui-form-label">DomId</label>
             <div class="layui-input-block">
                 <input type="text" name="DomId" v-model="DomId" required lay-verify="required"
-                       placeholder="请输入DomId" autocomplete="off" class="layui-input">
+                       placeholder="按钮Id" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-block">
+                范围：增-btnAdd,改-btnEdit,删-btnDel，刷新-btnRefresh
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">样式</label>
             <div class="layui-input-block">
                 <input type="text" name="Class" v-model="Class"
-                       placeholder="菜单的样式，如：layui-btn-danger" autocomplete="off" class="layui-input">
+                       placeholder="按钮的样式" autocomplete="off" class="layui-input">
             </div>
+                <div class="layui-input-block">
+                    如：layui-btn-normal,layui-btn-danger
+                </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">排序号</label>
@@ -192,5 +196,10 @@
     </form>
 </div>
 
+<script type="text/javascript">
+    $(function () {
+
+    } 
+</script>
 <script type="text/javascript" src="/layui/layui.js"></script>
 <script type="text/javascript" src="/userJs/modules.js"></script>

@@ -1,13 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : Helper
-// Author           : yubaolee
-// Created          : 12-16-2016
-//
-// Last Modified By : yubaolee
-// Last Modified On : 12-21-2016
-// 使用微软默认带超时的Cache
-// File: CacheContext.cs
-// ***********************************************************************
+﻿ 
 
 using System;
 using System.Web;

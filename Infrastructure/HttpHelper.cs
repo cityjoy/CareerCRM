@@ -39,8 +39,8 @@ namespace Infrastructure
 
         /// <summary>
         /// Get请求数据
-        ///   /// <para>最终以url参数的方式提交</para>
-        /// <para>yubaolee 2016-3-3 重构与post同样异步调用</para>
+        ///  <para>最终以url参数的方式提交</para>
+
         /// </summary>
         /// <param name="parameters">参数字典,可为空</param>
         /// <param name="requestUri">例如/api/Files/UploadFile</param>
