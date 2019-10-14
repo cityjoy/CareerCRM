@@ -52,6 +52,8 @@
                 <th lay-data="{checkbox:true, fixed: true}"></th>
                 <th lay-data="{ field: 'Name', sort: true}">名称</th>
                 <th lay-data="{ field: 'CreateTime', sort: true}">时间</th>
+                <th lay-data="{ field: 'IsPublish', sort: true}">是否发布</th>
+                <th lay-data="{ field: 'Id', sort: true}">Id</th>
                 <th lay-data="{toolbar: '#barList'}"></th>
             </tr>
         </thead>
@@ -79,13 +81,17 @@
         //主列表加载，可反复调用进行刷新
         var config = {};  //table的参数，如搜索key，点击tree的id
         var mainList = function () {
+
             table.reload('mainList', {
-                url: '/News/Load',
-                where: config,
-                done: function (res, curr, count) {
+                url: '/News/Load'
+                , where: config
+                , page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                , done: function (res, curr, count) {
                     this.where = {};
-                },
-                response: {
+                }
+                , response: {
                     statusCode: 200 //规定成功的状态码，默认：0
                 }
             });
@@ -182,15 +188,12 @@
             }
 
             , search: function () {   //搜索
-                config = { limit: 10, page: 1, Name: $('#Name').val(), StartCreateTime: $('#Start_CreateTime').val(), EndCreateTime: $('#End_CreateTime').val(), IsPublish: $('#IsPublish').val() };
+                config = { Name: $('#Name').val(), StartCreateTime: $('#Start_CreateTime').val(), EndCreateTime: $('#End_CreateTime').val(), IsPublish: $('#IsPublish').val() };
                 mainList();
             }
             , btnRefresh: function () {
                 window.location.reload();
-
-                 
             }
-
         };
 
         $('.toolList .layui-btn').on('click', function () {

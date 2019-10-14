@@ -12,12 +12,9 @@
             <input type="text" name="Name" v-model="Name" required lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
         </div>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">内容</label>
-        <div class="layui-input-block">
-            <script id="myFormDesign" type="text/plain" style="width: 100%;">
-            </script>
-        </div>
+    <div class="layui-input-block">
+        <script id="Content_Editor" type="text/plain" style="width: 100%;">
+        </script>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">是否发布</label>
@@ -26,12 +23,6 @@
             <input type="radio" name="IsPublish" value="false" title="否">
         </div>
     </div>
-    <!-- 如页面中字段需要使用富文本，使用下面注释的代码替换掉
-            <div class="layui-input-block">
-                <script id="myFormDesign" type="text/plain" style="width: 100%;">
-                </script>
-            </div>
-     -->
 
     <div class="layui-form-item">
         <div class="layui-input-block">
@@ -40,32 +31,20 @@
         </div>
     </div>
 </form>
-<!-- 如页面中字段需要使用富文本，将下面注释的代码开启 -->
-
-<script type="text/javascript" charset="utf-8" src="~/js/ueditor/ueditor.config.js?123"></script>
-<script type="text/javascript" charset="utf-8" src="~/js/ueditor/ueditor.all.js?123"></script>
-<script type="text/javascript" charset="utf-8" src="~/js/ueditor/lang/zh-cn/zh-cn.js?123"></script>
-<script type="text/javascript" charset="utf-8" src="~/js/ueditor/formdesign/leipi.formdesign.v4.js?123"></script>
+<script type="text/javascript" charset="utf-8" src="/js/ueditor/ueditor.config.js?123"></script>
+<script type="text/javascript" charset="utf-8" src="/js/ueditor/ueditor.all.js?123"></script>
+<script type="text/javascript" charset="utf-8" src="/js/ueditor/lang/zh-cn/zh-cn.js?123"></script>
+<script type="text/javascript" charset="utf-8" src="/js/ueditor/formdesign/leipi.formdesign.v4.js?123"></script>
 
 <script type="text/javascript" src="/layui/layui.js"></script>
 <script>
-    //如页面中字段需要使用富文本，将下面注释的代码开启， 初始化Ueditor
-    var ue = UE.getEditor('myFormDesign', {
+
+    // 如页面中字段需要使用富文本， 初始化Ueditor
+    var ue_Content = UE.getEditor('Content_Editor', {
         //allowDivTransToP: false,//阻止转换div 为p
         toolleipi: true,//是否显示设计器的 toolbars
         textarea: 'Content',//需使用富文本对应的字段名称（如果没有对应传值会失败）
         //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个
-        //toolbars: [[
-        //    'fullscreen', 'source'
-        //    , '|', 'undo', 'redo'
-        //    , '|', 'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'removeformat'
-        //    , '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist'
-        //    , '|', 'fontfamily', 'fontsize'
-        //    , '|', 'indent'
-        //    , '|', 'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify'
-        //    , '|', 'link', 'unlink'
-        //    , '|', 'horizontal', 'spechars', 'wordimage'
-        //    , '|', 'inserttable', 'deletetable', 'mergecells', 'splittocells']],
         //关闭字数统计
         wordCount: false,
         //关闭elementPath
@@ -74,7 +53,6 @@
         //默认的编辑区域高度
         , initialFrameHeight: 200
         , initialFrameWidth: 600
-        //,initialContent: '欢迎使用ueditor!'
         , iframeCssUrl: "/js/ueditor/formdesign/bootstrap/css/bootstrap.min.css" //引入自身 css使编辑器兼容你网站css
         //更多其他参数，请参考ueditor.config.js中的配置项
     });
@@ -101,11 +79,11 @@
                 function (data) {
                     var obj = data;
                     vm.$set('$data', obj);
-                    //如页面中字段需要使用富文本，使用下面注释的代码， 初始化Ueditor
-                    //加个延迟方法ueditor才能正常,初步猜测是bootstrap-modalmanager.js（让Bootstrap支持多模态框）的处理方式比较特殊，导致模态框与富文本输入框共存时出现问题。
+
                     setTimeout(function () {
-                        ue.setContent(obj.Content);
+                        ue_Content.setContent(obj.Content);
                     }, 500);
+
 
                     if (obj.IsPublish) {
                         $("input[name='IsPublish']").get(0).checked = true;

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿
+
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using CareerCRM.App.Interface;
@@ -10,24 +12,25 @@ using CareerCRM.Mvc.Models;
 using CareerCRM.Repository.Domain;
 
 namespace CareerCRM.Mvc.Controllers
-{ 
+{
+    [Authenticate]
     public partial class NewsController : BaseController
     {
 
-	    private readonly NewsApp _app;
-        public NewsController(IAuth authUtil, NewsApp  app) : base(authUtil)
+        private readonly NewsApp _app;
+        public NewsController(IAuth authUtil, NewsApp app) : base(authUtil)
         {
             _app = app;
         }
         #region 首页
-        [Authenticate]
+
         public ActionResult Index()
         {
-              return View();
+            return View();
         }
         #endregion
 
-		#region 加载列表
+        #region 加载列表
         public JsonResult Load([FromQuery]NewsListReq request)
         {
             return Json(_app.Load(request));
@@ -35,12 +38,10 @@ namespace CareerCRM.Mvc.Controllers
         #endregion
 
         #region 新建
-        [Authenticate]
-        public ActionResult Edit(string id ,bool readOnly=false)
-        {
-            ViewBag.ReadOnly = readOnly;
-            return View();
-        }
+        //public ActionResult Create()
+        //{
+        //      return View();
+        //}
 
         [HttpPost]
         public JsonResult Add(News model)
@@ -60,11 +61,11 @@ namespace CareerCRM.Mvc.Controllers
         #endregion
 
         #region 修改
-        //public ActionResult Edit(string id)
-        //{
-        //    var vm = _app.Get(id);
-        //    return  View(vm);
-        //}
+        public ActionResult Edit(string id)
+        {
+            var vm = _app.Get(id);
+            return View(vm);
+        }
 
         [HttpPost]
         public JsonResult Update(NewsFormDTO model)
@@ -106,6 +107,7 @@ namespace CareerCRM.Mvc.Controllers
 
         #region 详细
 
+
         public ActionResult Detail(string id)
         {
             var vm = _app.Get(id);
@@ -120,8 +122,7 @@ namespace CareerCRM.Mvc.Controllers
 
         }
         #endregion
-
-
-
     }
 }
+
+

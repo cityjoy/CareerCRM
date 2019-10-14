@@ -1,7 +1,8 @@
 ﻿@*控制器模板*@
 @using  CareerCRM.Mvc.Models.ViewModel;
 @model TempViewModel
-<p> using AutoMapper;
+<p>
+    using AutoMapper;
     using AutoMapper.QueryableExtensions;
     using @(Model.ProjectName).App.Interface;
     using @(Model.ProjectName).App.Request;
@@ -9,6 +10,7 @@
     using @(Model.ProjectName).App.SSO;
     using @(Model.ProjectName).Repository.Domain;
     using @(Model.ProjectName).Repository.Interface;
+    using Infrastructure;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -42,7 +44,7 @@
             if (fieldType == "string")
             {
             <text>
-    if (!string.IsNullOrWhiteSpace(@fieldName))
+    if (!string.IsNullOrWhiteSpace(request.@fieldName))
             {
                 exp= exp.And(m => m.@(fieldName).Contains(request.@(fieldName)));
             }
@@ -51,92 +53,86 @@
              if (fieldType == "bool")
             {
             <text>
-    if (null!=@fieldName)
+    if (null!=request.@fieldName)
             {
-                exp= exp.And(m => m.@(fieldName)=request.@(fieldName).Value);
+                exp= exp.And(m => m.@(fieldName)==request.@(fieldName).Value);
             }
             </text>
             }
             if (fieldType == "DateTime")
             {
-            <text>
-   if(DateTime.MinValue!=(request.Start@(fieldName))&&DateTime.MinValue != request.End@(fieldName))
+   <text>
+            if(DateTime.MinValue!=(request.Start@(fieldName))&&DateTime.MinValue != request.End@(fieldName))
             {
              exp = exp.And(m => m.@(fieldName)>request.Start@(fieldName)&&m.CreateTime<request.End@(fieldName));
-
-            }
-            else if (DateTime.MinValue != (request.Start@(fieldName)))
+             }
+           else if (DateTime.MinValue !=(request.Start@(fieldName)))
+                           {
+                           exp=exp.And(m => m.@(fieldName) > request.Start@(fieldName));} 
+           else if (DateTime.MinValue != (request.End@(fieldName)))
             {
-                exp = exp.And(m => m.@(fieldName) > request.Start@(fieldName));
-
+            exp = exp.And(m => m.@(fieldName) <request.End@(fieldName));
             }
-            else if (DateTime.MinValue != (request.End@(fieldName)))
-            {
-                exp = exp.And(m => m.@(fieldName) < request.End@(fieldName));
-
-            }
-            </text>
-            }
-
-        }
-    }
+    </text>
+}
+}
+}
     #region 使用AutoMapper获取List视图数据
 
     var configuration = new MapperConfiguration(cfg => cfg.CreateMap<@(Model.ModelName), @(Model.ModelName)ListVM>());
-    var NewsList = Repository.Find(request.page, 10).ProjectTo<@(Model.ModelName)ListVM>
-                    (configuration).ToList();
-            #endregion
-            #region 手动编码获取List视图数据
-                    //var @(Model.ModelName)List = Repository.Find(request.page, 10)
-                    // .Select(m => new  @(Model.ModelName)ListVM{
-                    @{ int n = 0;}
-                    @foreach (var item in Model.ListViewDataList)
-                    {
-                        n++;
-                        var fieldName = item.Replace("field_", "");
-                        if (n < Model.ListViewDataList.Count)
-                        {
-                            <text>// @fieldName = m.@fieldName,</text>
+    var NewsList = Repository.Find(request.page, 10,"",exp).ProjectTo<@(Model.ModelName)ListVM>(configuration).ToList();
+        #endregion
+        #region 手动编码获取List视图数据
+        //var @(Model.ModelName)List = Repository.Find(request.page, 10)
+        // .Select(m => new  @(Model.ModelName)ListVM{
+        @{ int n = 0;}
+        @foreach (var item in Model.ListViewDataList)
+        {
+            n++;
+            var fieldName = item.Replace("field_", "");
+            if (n < Model.ListViewDataList.Count)
+            {
+                <text>// @fieldName = m.@fieldName,</text>
 
-                        }
-                        else
-                        {
-                            <text>// @fieldName = m.@fieldName </text>
-                        }
-                    }
+            }
+            else
+            {
+                <text>// @fieldName = m.@fieldName </text>
+            }
+        }
 
-                    //})
-                    //.ToList< @(Model.ModelName)ListVM>();
-           #endregion
-                    var records = Repository.GetCount();
-                    return new TableData
-                    {
-                    count = records,
-                    data = @(Model.ModelName)List,
-                    };
-                    }
-                    /// <summary>
-                    /// 更新
-                    /// </summary>
-                    /// <param name="obj"></param>
-                    public void Update(@(Model.ModelName)FormDTO obj)
-                    {
-                    Repository.Update(u => u.Id == obj.Id, u => new @(Model.ModelName)
-                    {
-                    @foreach (string obj in Model.DataList)
-                    {
-                        string fieldName = obj.Replace("form_", "").Trim();
-                        var t = "\r\n" + fieldName + " = obj." + fieldName + ",";
+        //})
+        //.ToList< @(Model.ModelName)ListVM>();
+        #endregion
+        var records = Repository.GetCount(exp);
+        return new TableData
+        {
+        count = records,
+        data = @(Model.ModelName)List,
+        };
+        }
+        /// <summary>
+        /// 更新
+        ///</summary>
+        /// <param name="obj"></param>
+        public void Update(@(Model.ModelName)FormDTO obj)
+        {
+        Repository.Update(u => u.Id == obj.Id, u => new @(Model.ModelName)
+        {
+        @foreach (string obj in Model.DataList)
+        {
+            string fieldName = obj.Replace("form_", "").Trim();
+            var t = "\r\n" + fieldName + " = obj." + fieldName + ",";
 
-                        @Html.Raw(t);
+            @Html.Raw(t);
 
-                    }
+        }
 
-                    });
+        });
 
-                    }
+        }
 
-                    }
-                    }
+        }
+        }
 </p>
 

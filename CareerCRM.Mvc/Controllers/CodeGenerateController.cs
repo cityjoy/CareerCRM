@@ -123,8 +123,8 @@ namespace CareerCRM.Mvc.Controllers
         {
             List<Type> list = GetAllTypes("*.Repository.dll");
             Type result = list.Where(m => m.Name == entityName).First();
-            var pros = result.GetProperties().Select(m => new { Name = m.Name }).ToList();
-
+            var pros = result.GetProperties().Select(m => new { Name = m.Name,Desc = m.CustomAttributes.First().ConstructorArguments[0].Value, PropertyType = m.PropertyType.Name}).ToList();
+             
             TableData model = new TableData
             {
                 data = pros,
@@ -389,6 +389,7 @@ namespace CareerCRM.Mvc.Controllers
             List<string> searchList = fields.Where(m => m.StartsWith("search_")).ToList();//搜索字段
             List<string> fieldList = fields.Where(m => m.StartsWith("field_")).ToList();//列表字段
             List<string> formList = fields.Where(m => m.StartsWith("form_")).ToList();//表单字段
+            List<string> contentList = fields.Where(m => m.StartsWith("content_")).ToList();//需要设置的富文本字段
 
             List<Type> list = GetAllTypes("*.Repository.dll");
             Type modelType = list.Where(u => u.Name == modelName).FirstOrDefault();
@@ -400,12 +401,15 @@ namespace CareerCRM.Mvc.Controllers
             {
                 { "searchList", searchList },
                 { "fieldList", fieldList },
-                { "formList", formList }
+                { "formList", formList },
+                { "contentList", contentList }
+                
             };
 
             List<string> searchDataList = new List<string>();
             List<string> formDataList = new List<string>();
             List<string> tableDataList = new List<string>();
+            List<string> contentDataList = new List<string>();
 
             foreach (KeyValuePair<string, List<string>> item in dict)
             {
@@ -417,13 +421,17 @@ namespace CareerCRM.Mvc.Controllers
                     {
                         fieldName = f.Replace("search_", "").Trim();
                     }
-                    if (item.Key == "fieldList")
+                    else if (item.Key == "fieldList")
                     {
                         fieldName = f.Replace("field_", "").Trim();
                     }
-                    if (item.Key == "formList")
+                    else if (item.Key == "formList")
                     {
                         fieldName = f.Replace("form_", "").Trim();
+                    }
+                    else if (item.Key == "contentList")
+                    {
+                        fieldName = f.Replace("content_", "").Trim();
                     }
                     PropertyInfo pro = pros.Where(m => m.Name == fieldName).FirstOrDefault();
                     Type t = pro.PropertyType;
@@ -445,13 +453,17 @@ namespace CareerCRM.Mvc.Controllers
                     {
                         searchDataList.Add(fieldName + "," + descriptionName + "," + fieldType);
                     }
-                    if (item.Key == "fieldList")
+                    else if (item.Key == "fieldList")
                     {
                         tableDataList.Add(fieldName + "," + descriptionName + "," + fieldType);
                     }
-                    if (item.Key == "formList")
+                    else if (item.Key == "formList")
                     {
                         formDataList.Add(fieldName + "," + descriptionName + "," + fieldType);
+                    }
+                    else if (item.Key == "contentList")
+                    {
+                        contentDataList.Add(fieldName);
                     }
 
 
@@ -464,9 +476,19 @@ namespace CareerCRM.Mvc.Controllers
                 Directory.CreateDirectory(viewPath);
 
             }
+            TempViewModel viewModel = new TempViewModel()
+            {
+                ProjectName = "CareerCRM",
+                ControllerName = modelName,
+                ModelName = modelName,
+                DataList = formDataList,
+                SearchDataList = searchDataList,
+                ContentDataList = contentDataList,
+                ListViewDataList = tableDataList
+            };
             if (tableDataList.Count > 0)//生成列表视图
             {
-                TempViewModel viewModel = new TempViewModel() { ProjectName = "CareerCRM", ControllerName = modelName, ModelName = modelName, DataList = tableDataList, SearchDataList = searchDataList };
+                
                 content = Render<TempViewModel>("~/Template/ListViewTemp.cshtml", viewModel);
 
                 System.IO.File.WriteAllText($"{viewPath}{modelName}List.cshtml", content, Encoding.UTF8);
@@ -480,7 +502,6 @@ namespace CareerCRM.Mvc.Controllers
             //System.IO.File.WriteAllText($"{viewPath}Edit.cshtml", content, Encoding.UTF8);
             if (formDataList.Count > 0)//生成表单,详情视图
             {
-                TempViewModel viewModel = new TempViewModel() { ProjectName = "CareerCRM", ControllerName = modelName, ModelName = modelName, DataList = formDataList };
                 content = Render<TempViewModel>("~/Template/EditViewTemp.cshtml", viewModel);
                 System.IO.File.WriteAllText($"{viewPath}Edit.cshtml", content, Encoding.UTF8);
                 content = Render<TempViewModel>("~/Template/DetailViewTemp.cshtml", viewModel);

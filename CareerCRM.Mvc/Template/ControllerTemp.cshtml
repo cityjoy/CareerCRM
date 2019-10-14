@@ -46,7 +46,7 @@
     //}
 
     [HttpPost]
-    public JsonResult Add($modelname$ model)
+    public JsonResult Add(@(Model.ModelName) model)
     {
     try
     {
@@ -70,8 +70,7 @@
     }
 
     [HttpPost]
-    [ValidateFormItemOnly]
-    public JsonResult Update($modelname$FormDTO model)
+    public JsonResult Update(@(Model.ModelName)FormDTO model)
     {
     try
     {
@@ -109,10 +108,20 @@
     #endregion
 
     #region 详细
-    public ActionResult Get(string id)
+
+
+    public ActionResult Detail(string id)
     {
     var vm = _app.Get(id);
     return View(vm);
+
+    }
+
+    public JsonResult Get(string id)
+    {
+    var vm = _app.Get(id);
+    return Json(vm);
+
     }
     #endregion
     }

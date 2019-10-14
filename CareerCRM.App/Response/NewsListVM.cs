@@ -20,5 +20,11 @@ namespace CareerCRM.App.Response
         /// </summary>
         [Description("时间")]
         public DateTime CreateTime { get; set; }
+
+        /// <summary>
+        /// 是否发布
+        ///</summary>
+        [Description("是否发布")]
+        public bool IsPublish { get; set; }
     }
 }

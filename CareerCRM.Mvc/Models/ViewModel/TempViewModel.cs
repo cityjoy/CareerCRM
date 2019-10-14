@@ -34,5 +34,9 @@ namespace CareerCRM.Mvc.Models.ViewModel
         /// 搜索字段数据
         /// </summary>
         public List<string> SearchDataList { get; set; }
+        /// <summary>
+        /// 要设置为富文本的字段数据
+        /// </summary>
+        public List<string> ContentDataList { get; set; }
     }
 }

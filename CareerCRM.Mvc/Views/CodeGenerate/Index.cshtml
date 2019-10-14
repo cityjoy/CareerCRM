@@ -27,10 +27,12 @@
                 <thead>
                     <tr>
                         <th lay-data="{field:'Name', width:100, fixed: true}">字段名称</th>
-                        <th lay-data="{field:'desc', width:300, fixed: true}">字段描述</th>
+                        <th lay-data="{field:'Desc', width:100, fixed: true}">字段描述</th>
+                        <th lay-data="{field:'PropertyType', width:100,fixed: true}">字段类型</th>
                         <th lay-data="{fixed:true,width:100, toolbar: '#searchbox'}">搜索条件</th>
                         <th lay-data="{fixed:true, width:100,toolbar: '#fieldbox'}">列表展示</th>
                         <th lay-data="{fixed:true, width:100,toolbar: '#formbox'}">表单展示</th>
+                        <th lay-data="{fixed:true, width:150,toolbar: '#typebox'}">表单字段显示</th>
                     </tr>
                 </thead>
             </table>
@@ -52,6 +54,9 @@
 <script type="text/html" id="formbox">
     @*<input type="checkbox" name="like[write]" title="启用">*@
     <input lay-skin="primary" type="checkbox" value="true"   name="form_{{d.Name}}">
+</script>
+<script type="text/html" id="typebox">
+    <input type="checkbox" name="content_{{d.Name}}" title="显示为富文本">
 </script>
 <script type="text/javascript" src="/layui/layui.js"></script>
 

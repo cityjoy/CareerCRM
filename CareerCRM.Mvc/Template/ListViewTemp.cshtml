@@ -60,6 +60,7 @@
                     <div class="layui-inline toolList">
                         <div class="layui-input-inline">
                             <button data-type="search" class="layui-btn layui-btn-small layui-btn"><i class="layui-icon layui-icon-search"></i>搜索</button>
+                            <button data-type="btnRefresh" class="layui-btn layui-btn-small layui-btn"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
                         </div>
                     </div>
                 </div>
@@ -74,7 +75,7 @@
         <thead>
             <tr>
                 <th lay-data="{checkbox:true, fixed: true}"></th>
-                @foreach (var item in Model.DataList)
+                @foreach (var item in Model.ListViewDataList)
                 {
                     var datas = item.Split(',');
                     var fieldName = datas[0];
@@ -113,9 +114,15 @@
         var mainList = function () {
 
             table.reload('mainList', {
-                url: '/@Model.ControllerName/Load',
-                where: config
-                , response: {
+                url: '/@Model.ControllerName/Load'
+               ,where: config
+               ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                ,done: function (res, curr, count) {
+                    this.where = {};
+                }
+               ,response: {
                     statusCode: 200 //规定成功的状态码，默认：0
                 }
             });
@@ -247,9 +254,8 @@
                     }
                 }
             , btnRefresh: function () {
-                    mainList();
-                }
-
+                window.location.reload();
+            }
                 };
 
         $('.toolList .layui-btn').on('click', function () {
