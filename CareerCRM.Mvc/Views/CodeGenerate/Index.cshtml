@@ -22,8 +22,77 @@
 </script>
 <div id="divEdit" style="display: none">
     <form class="layui-form">
+        
         <div class="layui-row">
-            <table class="layui-table" lay-data="{ page:false, id:'entityColumnList'}"  lay-filter="list" lay-size="sm">
+            <div class="layui-form-item">
+                <label class="layui-form-label">模块名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Name" v-model="Name" required lay-verify="required"
+                           placeholder="请输入模块名称" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">模块标识</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Code" v-model="Code"
+                           placeholder="比如：Module" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">URL地址</label>
+                <div class="layui-input-block">
+                    <input type="text" name="Url" v-model="Url" required lay-verify="required"
+                           placeholder="请输入URL" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">图标</label>
+                <div class="layui-input-block">
+                    <select name="IconName" v-model="IconName" required lay-verify="required">
+                        <option value="" selected="selected"></option>
+                        <option value="&#xe679;">盾牌</option>
+                        <option value="&#xe672;">授权</option>
+                        <option value="&#xe674;">高级</option>
+                        <option value="&#xe665;">控制台</option>
+                        <option value="&#xe679;">验证码</option>
+                        <option value="&#xe673;">密码锁</option>
+                        <option value="&#xe68e;">主页</option>
+                        <option value="&#xe66c;">旗帜</option>
+                        <option value="&#xe667;">消息</option>
+                        <option value="&#xe716;">设置</option>
+                        <option value="&#xe656;">模板</option>
+                        <option value="&#xe653;">应用</option>
+                        <option value="&#xe65d;">相机</option>
+                        <option value="&#xe735;">钻石</option>
+                        <option value="&#xe705;">办公</option>
+                        <option value="&#xe6ed;">视频</option>
+                        <option value="&#xe64a;">图片</option>
+                        <option value="&#xe62d;">表格</option>
+                        <option value="&#xe67b;">星星</option>
+                        <option value="&#xe678;">手机</option>
+                    </select>
+
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">排序号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="SortNo" v-model="SortNo" required lay-verify="required"
+                           placeholder="请输入排序号" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">所属模块</label>
+                <div class="layui-input-block">
+                    <input id="ParentName" name="ParentName" v-model="ParentName" class="layui-input" />
+                    <input id="ParentId" name="ParentId" v-model="ParentId" type="hidden" />
+                    <div id="menuContent" class="menuContent" style="display: none;">
+                        <ul id="org" class="ztree"></ul>
+                    </div>
+                </div>
+            </div>
+            <table class="layui-table" lay-data="{ page:false, id:'entityColumnList'}" lay-filter="list" lay-size="sm">
                 <thead>
                     <tr>
                         <th lay-data="{field:'Name', width:100, fixed: true}">字段名称</th>
@@ -41,7 +110,7 @@
                 <button type="button" class="layui-btn layui-btn-warm" lay-submit lay-filter="createCode">生成代码</button>
             </div>
         </div>
-        </form>
+    </form>
 </div>
 <script type="text/html" id="searchbox">
     @*<input type="checkbox" name="like[write]" title="启用">*@
@@ -71,7 +140,7 @@
         var table = layui.table;
         var openauth = layui.openauth;
 
-
+        layui.droptree("/UserSession/GetModules", "#ParentName", "#ParentId", false);
 
         //主列表加载，可反复调用进行刷新
         var config = {};  //table的参数，如搜索key，点击tree的id

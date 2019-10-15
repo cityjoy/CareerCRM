@@ -21,7 +21,7 @@
                 if (fieldType == "string")
                 {
                     <div class="layui-inline">
-                        <label class="layui-form-label">@Html.Raw(descriptionName)</label>
+                        <label >@Html.Raw(descriptionName)</label>
                         <div class="layui-input-inline">
                             <input type="text" Id="@(fieldName)" autocomplete="off" class="layui-input">
                         </div>
@@ -31,20 +31,20 @@
                 {
                     datetimeFields.Add(fieldName);
                     <div class="layui-inline">
-                        <label class="layui-form-label">@Html.Raw(descriptionName)</label>
+                        <label>@Html.Raw(descriptionName)</label>
                         <div class="layui-input-inline" style="width: 100px;">
-                            <input type="text" Id="Start_@(fieldName)" autocomplete="off" class="layui-input">
+                            <input type="text" Id="Start_@(fieldName)" autocomplete="off" class="layui-input" placeholder="起始时间">
                         </div>
                         <div class="layui-form-mid">-</div>
                         <div class="layui-input-inline" style="width: 100px;">
-                            <input type="text" Id="End_@(fieldName)" autocomplete="off" class="layui-input">
+                            <input type="text" Id="End_@(fieldName)" autocomplete="off" class="layui-input" placeholder="结束时间">
                         </div>
                     </div>
                         }
                         else if (fieldType == "bool")
                         {
                         <div class="layui-inline">
-                            <label class="layui-form-label">@Html.Raw(descriptionName)</label>
+                            <label>@Html.Raw(descriptionName)</label>
                             <div class="layui-input-inline" style="width:100px">
                                 <select Id="@(fieldName)" lay-verify="required" lay-search="" style="width:50px">
                                     <option value="">选择</option>

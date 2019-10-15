@@ -26,7 +26,8 @@ namespace CareerCRM.Mvc.Controllers
         /// </summary>
         public string GetModulesTree()
         {
-            var moduleTree = _authStrategyContext.Modules.GenerateTree(u => u.Id, u => u.ParentId);
+            var modules = _authStrategyContext.Modules;
+            var moduleTree = modules.GenerateTree(u => u.Id, u => u.ParentId);
             return JsonHelper.Instance.Serialize(moduleTree);
         }
 

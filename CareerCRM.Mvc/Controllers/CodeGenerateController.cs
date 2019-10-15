@@ -1,8 +1,10 @@
-﻿using CareerCRM.App.Interface;
+﻿using CareerCRM.App;
+using CareerCRM.App.Interface;
 using CareerCRM.App.Request;
 using CareerCRM.App.Response;
 using CareerCRM.Mvc.Models.ViewModel;
 using CareerCRM.Repository.Core;
+using CareerCRM.Repository.Domain;
 using Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -44,9 +46,12 @@ namespace CareerCRM.Mvc.Controllers
         private readonly ITempDataProvider _tempDataProvider;
         private readonly IServiceProvider _serviceProvider;
 
-        public CodeGenerateController(IAuth authUtil, IRazorViewEngine viewEngine, ITempDataProvider tempDataProvider,
+        private ModuleManagerApp _moduelApp ;
+
+        public CodeGenerateController(IAuth authUtil, ModuleManagerApp moduelApp,IRazorViewEngine viewEngine, ITempDataProvider tempDataProvider,
             IServiceProvider serviceProvider) : base(authUtil)
         {
+            _moduelApp = moduelApp;
             _viewEngine = viewEngine;
             _tempDataProvider = tempDataProvider;
             _serviceProvider = serviceProvider;
@@ -138,8 +143,18 @@ namespace CareerCRM.Mvc.Controllers
         /// <param name="m"></param>
         /// <returns></returns>
         [HttpPost]
-        public JsonResult CreateCodes()
+        public JsonResult CreateCodes(Repository.Domain.Module module)
         {
+            _moduelApp.Add(module);
+            List<ModuleElement> elements = new List<ModuleElement>()
+            {
+                new ModuleElement{ ModuleId=module.Id, Name="新增", DomId="btnAdd", Class="layui-btn-normal" ,Sort=1},
+                new ModuleElement{ModuleId=module.Id,Name="删除", DomId="btnDel", Class="layui-btn-danger" ,Sort=1},
+                new ModuleElement{ModuleId=module.Id,Name="编辑", DomId="btnEdit", Class="layui-btn-normal" ,Sort=1},
+            };
+            elements.ForEach(m => {
+                _moduelApp.AddMenu(m);
+            });
             ICollection<string> formKeys = Request.ReadFormAsync().Result.Keys;
             List<string> list = new List<string>();
             foreach (string item in formKeys)

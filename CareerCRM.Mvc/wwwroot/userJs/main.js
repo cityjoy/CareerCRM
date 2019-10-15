@@ -32,26 +32,26 @@ layui.config({
         }
     )
 
-    //我的流程
-    $.getJSON("/Flowinstances/Load?limit=1&page=1",
-        function (data) {
-            $(".flows span").text(data.count);
-        }
-    )
+    ////我的流程
+    //$.getJSON("/Flowinstances/Load?limit=1&page=1",
+    //    function (data) {
+    //        $(".flows span").text(data.count);
+    //    }
+    //)
 
-    //流程模板
-    $.getJSON("/flowschemes/Load?limit=1&page=1",
-        function (data) {
-            $(".flowschemes span").text(data.count);
-        }
-    )
+    ////流程模板
+    //$.getJSON("/flowschemes/Load?limit=1&page=1",
+    //    function (data) {
+    //        $(".flowschemes span").text(data.count);
+    //    }
+    //)
 
-    //表单
-    $.getJSON("/Forms/Load?limit=1&page=1",
-        function (data) {
-            $(".forms span").text(data.count);
-        }
-    )
+    ////表单
+    //$.getJSON("/Forms/Load?limit=1&page=1",
+    //    function (data) {
+    //        $(".forms span").text(data.count);
+    //    }
+    //)
 
 	//数字格式化
 	$(".panel span").each(function(){
