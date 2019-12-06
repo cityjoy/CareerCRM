@@ -32,7 +32,7 @@
             public TableData Load(@(Model.ModelName)ListReq request)
             {
             var loginUser = _auth.GetCurrentUser();
-            Expression<Func<News, bool>> exp = u => true;
+            Expression<Func<Model.ModelName, bool>> exp = u => true;
     @if (Model.SearchDataList.Count > 0)
     {
         foreach (var item in Model.SearchDataList) {
@@ -80,7 +80,7 @@
     #region 使用AutoMapper获取List视图数据
 
     var configuration = new MapperConfiguration(cfg => cfg.CreateMap<@(Model.ModelName), @(Model.ModelName)ListVM>());
-    var NewsList = Repository.Find(request.page, 10,"",exp).ProjectTo<@(Model.ModelName)ListVM>(configuration).ToList();
+    var @(Model.ModelName)List = Repository.Find(request.page, 10,"",exp).ProjectTo<@(Model.ModelName)ListVM>(configuration).ToList();
         #endregion
         #region 手动编码获取List视图数据
         //var @(Model.ModelName)List = Repository.Find(request.page, 10)
